@@ -144,3 +144,18 @@
     transition: none;
   }
 }
+
+/* Reinforce the restored classic hero treatment on desktop/tablet. */
+@media (min-width: 681px) {
+  .hero-main {
+    border-radius: 170px 170px 34px 34px !important;
+  }
+
+  .hero-left {
+    border-radius: 28px !important;
+  }
+
+  .hero-right {
+    border-radius: 30px !important;
+  }
+}

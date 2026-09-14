@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { TouchEvent } from 'react'
 
 const artworks = [
   { src: '/ephremart/art/art-01.webp', alt: 'Figurative painting with musical and cultural motifs by Ephrem Tefera', shape: 'portrait' },
@@ -72,11 +73,11 @@ function App() {
     })
   }
 
-  const onArtworkTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+  const onArtworkTouchStart = (event: TouchEvent<HTMLElement>) => {
     touchStartX.current = event.changedTouches[0]?.clientX ?? null
   }
 
-  const onArtworkTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+  const onArtworkTouchEnd = (event: TouchEvent<HTMLElement>) => {
     if (touchStartX.current === null) return
     const endX = event.changedTouches[0]?.clientX ?? touchStartX.current
     const delta = endX - touchStartX.current

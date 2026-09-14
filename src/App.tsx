@@ -1,13 +1,17 @@
-const art = {
-  musicPortrait: '/ephremart/art/photo_1_2026-09-14_18-07-20.webp',
-  dualPortrait: '/ephremart/art/photo_2_2026-09-14_18-07-20.webp',
-  landscape: '/ephremart/art/photo_3_2026-09-14_18-07-20.webp',
-  heritageVertical: '/ephremart/art/photo_5_2026-09-14_18-07-20.webp',
-  horseSymbol: '/ephremart/art/photo_6_2026-09-14_18-07-20.webp',
-  embrace: '/ephremart/art/photo_7_2026-09-14_18-07-20.webp',
-  pianoWide: '/ephremart/art/photo_8_2026-09-14_18-07-20.webp',
-  figures: '/ephremart/art/photo_9_2026-09-14_18-07-20.webp',
-}
+import { useEffect, useState } from 'react'
+
+const artworks = [
+  { src: '/ephremart/art/art-01.webp', alt: 'Figurative painting with musical and cultural motifs by Ephrem Tefera', shape: 'portrait' },
+  { src: '/ephremart/art/art-02.webp', alt: 'Two stylized figures with a piano motif by Ephrem Tefera', shape: 'portrait-tall' },
+  { src: '/ephremart/art/art-03.webp', alt: 'Highland landscape painting by Ephrem Tefera', shape: 'landscape-wide' },
+  { src: '/ephremart/art/art-04.webp', alt: 'Painting with Ethiopian cultural symbols and colors by Ephrem Tefera', shape: 'landscape' },
+  { src: '/ephremart/art/art-05.webp', alt: 'Heritage composition with shields and symbolic forms by Ephrem Tefera', shape: 'portrait' },
+  { src: '/ephremart/art/art-06.webp', alt: 'Symbolic painting with a horse and geometric forms by Ephrem Tefera', shape: 'portrait-tall' },
+  { src: '/ephremart/art/art-07.webp', alt: 'Contemporary figurative painting of two women by Ephrem Tefera', shape: 'portrait' },
+  { src: '/ephremart/art/art-08.webp', alt: 'Blue figure resting across piano keys by Ephrem Tefera', shape: 'landscape' },
+  { src: '/ephremart/art/art-09.webp', alt: 'Contemporary figurative painting by Ephrem Tefera', shape: 'portrait' },
+  { src: '/ephremart/art/art-10.webp', alt: 'Urban water landscape painting with a boat by Ephrem Tefera', shape: 'landscape-wide' },
+]
 
 const exhibitions = [
   'Hyatt Regency',
@@ -18,133 +22,184 @@ const exhibitions = [
 ]
 
 function App() {
+  const [activeArtwork, setActiveArtwork] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (activeArtwork === null) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActiveArtwork(null)
+      if (event.key === 'ArrowRight') setActiveArtwork((current) => current === null ? null : (current + 1) % artworks.length)
+      if (event.key === 'ArrowLeft') setActiveArtwork((current) => current === null ? null : (current - 1 + artworks.length) % artworks.length)
+    }
+
+    document.body.classList.add('lightbox-open')
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.classList.remove('lightbox-open')
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [activeArtwork])
+
   return (
-    <main>
+    <main id="top">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Ephrem Tefera home">
           <span className="brand-mark">ET</span>
-          <span>Ephrem Tefera</span>
+          <span className="brand-copy"><strong>Ephrem Tefera</strong><small>Visual Artist</small></span>
         </a>
         <nav aria-label="Primary navigation">
           <a href="#works">Works</a>
-          <a href="#themes">Themes</a>
+          <a href="#language">Visual language</a>
           <a href="#about">About</a>
           <a href="#exhibitions">Exhibitions</a>
         </nav>
       </header>
 
-      <section className="hero" id="top">
+      <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <p className="eyebrow">Visual Artist · Addis Ababa, Ethiopia</p>
-          <h1>
-            Contemporary stories
-            <span>through color, culture & form.</span>
-          </h1>
+          <p className="eyebrow">Addis Ababa · Ethiopia</p>
+          <h1 id="hero-title">Ephrem<br />Tefera</h1>
+          <p className="hero-line">Contemporary visual stories in <em>color, culture & form.</em></p>
           <p className="hero-intro">
-            Ephrem Tefera works primarily in acrylic and oil painting, exploring identity,
-            beauty, culture and women’s life journeys through contemporary visual expression.
+            Working primarily in acrylic and oil, Ephrem explores identity, beauty, culture,
+            and women’s life journeys through contemporary visual expression.
           </p>
-          <div className="hero-actions">
-            <a className="button button-primary" href="#works">Explore works <span>↗</span></a>
-            <a className="text-link" href="#about">Meet the artist <span>↓</span></a>
-          </div>
+          <a className="round-link" href="#works" aria-label="Explore selected works">
+            <span>Explore works</span><b>↘</b>
+          </a>
         </div>
 
-        <div className="hero-gallery" aria-label="Selected paintings by Ephrem Tefera">
-          <figure className="hero-card card-a"><img src={art.musicPortrait} alt="Selected painting by Ephrem Tefera" /></figure>
-          <figure className="hero-card card-b"><img src={art.dualPortrait} alt="Selected painting by Ephrem Tefera" /></figure>
-          <figure className="hero-card card-main"><img src={art.embrace} alt="Selected painting by Ephrem Tefera" /></figure>
-          <figure className="hero-card card-c"><img src={art.heritageVertical} alt="Selected painting by Ephrem Tefera" /></figure>
-          <figure className="hero-card card-d"><img src={art.figures} alt="Selected painting by Ephrem Tefera" /></figure>
+        <div className="hero-stage" aria-label="Selected works by Ephrem Tefera">
+          <button className="hero-art hero-main" onClick={() => setActiveArtwork(1)} aria-label="View selected artwork">
+            <img src={artworks[1].src} alt={artworks[1].alt} fetchPriority="high" />
+          </button>
+          <button className="hero-art hero-left" onClick={() => setActiveArtwork(7)} aria-label="View selected artwork">
+            <img src={artworks[7].src} alt={artworks[7].alt} fetchPriority="high" />
+          </button>
+          <button className="hero-art hero-right" onClick={() => setActiveArtwork(4)} aria-label="View selected artwork">
+            <img src={artworks[4].src} alt={artworks[4].alt} fetchPriority="high" />
+          </button>
+          <div className="hero-index">Selected works <span>01—10</span></div>
         </div>
+      </section>
+
+      <section className="manifesto" aria-label="Artist introduction">
+        <p>Painting becomes a place where <span>identity</span>, memory, rhythm and cultural form can meet.</p>
       </section>
 
       <section className="section works" id="works">
         <div className="section-heading">
           <div>
-            <p className="script-label">Selected</p>
-            <h2>Works</h2>
+            <p className="kicker">Portfolio</p>
+            <h2>Selected works</h2>
           </div>
-          <p>A first selection from Ephrem’s figurative, cultural, musical and landscape work.</p>
+          <p>Ten works showing the breadth of Ephrem’s figurative, symbolic, musical and landscape practice.</p>
         </div>
 
-        <div className="works-grid">
-          <figure className="work work-tall"><img src={art.musicPortrait} alt="Painting by Ephrem Tefera" /><figcaption><span>Selected work</span><span>01</span></figcaption></figure>
-          <figure className="work work-wide"><img src={art.landscape} alt="Landscape painting by Ephrem Tefera" /><figcaption><span>Selected work</span><span>02</span></figcaption></figure>
-          <figure className="work work-wide-bottom"><img src={art.pianoWide} alt="Painting with musical imagery by Ephrem Tefera" /><figcaption><span>Selected work</span><span>03</span></figcaption></figure>
+        <div className="gallery-grid">
+          {artworks.map((artwork, index) => (
+            <button
+              className={`gallery-item gallery-${index + 1}`}
+              key={artwork.src}
+              onClick={() => setActiveArtwork(index)}
+              aria-label={`Open selected work ${String(index + 1).padStart(2, '0')}`}
+            >
+              <img src={artwork.src} alt={artwork.alt} loading={index < 3 ? 'eager' : 'lazy'} decoding="async" />
+              <span className="gallery-meta"><b>{String(index + 1).padStart(2, '0')}</b><em>View work ↗</em></span>
+            </button>
+          ))}
         </div>
       </section>
 
-      <section className="dark-feature" id="themes">
-        <div className="feature-title">
-          <p className="script-label">Recurring visual worlds</p>
-          <h2>Identity, rhythm<br />& memory</h2>
+      <section className="visual-language" id="language">
+        <div className="language-copy">
+          <p className="kicker">Recurring visual worlds</p>
+          <h2>Identity.<br />Rhythm.<br /><span>Memory.</span></h2>
+          <p>
+            Across the work, stylized figures, musical forms, cultural symbols and landscapes
+            move between personal experience and wider cultural memory.
+          </p>
         </div>
-        <div className="feature-art feature-one"><img src={art.dualPortrait} alt="Painting by Ephrem Tefera" /></div>
-        <div className="feature-art feature-two"><img src={art.heritageVertical} alt="Painting by Ephrem Tefera" /></div>
-        <div className="feature-art feature-three"><img src={art.pianoWide} alt="Painting by Ephrem Tefera" /></div>
-        <p className="feature-note">Figurative works · Music & form · Heritage & symbol · Land & place</p>
-      </section>
-
-      <section className="themes section">
-        <div className="section-heading compact">
-          <div>
-            <p className="script-label">Explore</p>
-            <h2>Visual themes</h2>
-          </div>
+        <div className="language-collage">
+          <figure className="language-a"><img src={artworks[6].src} alt={artworks[6].alt} loading="lazy" /></figure>
+          <figure className="language-b"><img src={artworks[3].src} alt={artworks[3].alt} loading="lazy" /></figure>
+          <figure className="language-c"><img src={artworks[0].src} alt={artworks[0].alt} loading="lazy" /></figure>
         </div>
-        <div className="theme-list">
-          <article><span>01</span><h3>Figurative works</h3><p>Expressive figures, relationships, beauty and human presence.</p></article>
-          <article><span>02</span><h3>Music & form</h3><p>Rhythm, instruments and musical motifs translated into shape and color.</p></article>
-          <article><span>03</span><h3>Heritage & symbol</h3><p>Cultural forms and visual symbols reinterpreted through a contemporary language.</p></article>
-          <article><span>04</span><h3>Land & place</h3><p>Landscape, environment and place as part of the artist’s wider visual world.</p></article>
+        <div className="theme-strip" aria-label="Recurring themes">
+          <span>Figurative works</span><span>Music & form</span><span>Heritage & symbol</span><span>Land & place</span>
         </div>
       </section>
 
       <section className="about section" id="about">
-        <div className="about-art"><img src={art.horseSymbol} alt="Painting by Ephrem Tefera" /></div>
+        <div className="about-visual">
+          <figure className="about-main"><img src={artworks[5].src} alt={artworks[5].alt} loading="lazy" /></figure>
+          <figure className="about-detail"><img src={artworks[2].src} alt={artworks[2].alt} loading="lazy" /></figure>
+        </div>
         <div className="about-copy">
-          <p className="script-label">The artist</p>
+          <p className="kicker">The artist</p>
           <h2>Ephrem Tefera</h2>
-          <p className="lead">Ephrem Tefera is a visual artist based in Addis Ababa, Ethiopia, working primarily in acrylic and oil painting.</p>
-          <p>His work explores identity, beauty, culture, and women’s life journeys through contemporary visual expression.</p>
+          <p className="lead">A visual artist based in Addis Ababa, Ethiopia, working primarily in acrylic and oil painting.</p>
+          <p>
+            His work explores identity, beauty, culture, and women’s life journeys through contemporary visual expression.
+          </p>
           <div className="about-facts">
-            <div><span>Education</span><p>Addis Ababa University, Alle School of Fine Arts and Design<br />Abyssinia Fine Art School</p></div>
-            <div><span>Recognition</span><p>Certificate from UNFPI</p></div>
+            <div>
+              <span>Education</span>
+              <p>Addis Ababa University, Alle School of Fine Arts and Design<br />Abyssinia Fine Art School</p>
+            </div>
+            <div>
+              <span>Recognition</span>
+              <p>Certificate from UNFPI</p>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="exhibitions section" id="exhibitions">
-        <div className="section-heading">
+        <div className="section-heading exhibitions-heading">
           <div>
-            <p className="script-label">Selected</p>
+            <p className="kicker">Selected venues</p>
             <h2>Exhibitions</h2>
           </div>
-          <p>Venues where Ephrem Tefera’s work has been exhibited.</p>
+          <p>Ephrem’s work has been presented at selected museum, gallery and hospitality venues.</p>
         </div>
         <div className="exhibition-list">
           {exhibitions.map((venue, index) => (
-            <div className="exhibition-row" key={venue}>
+            <article className="exhibition-row" key={venue}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <h3>{venue}</h3>
-              <p>Selected exhibition venue</p>
-            </div>
+              <b>Selected exhibition venue</b>
+            </article>
           ))}
         </div>
       </section>
 
+      <section className="closing-art" aria-label="Closing artwork">
+        <img src={artworks[4].src} alt={artworks[4].alt} loading="lazy" />
+        <div className="closing-copy">
+          <p>Visual Artist · Addis Ababa</p>
+          <h2>Color becomes memory.<br />Form becomes story.</h2>
+        </div>
+      </section>
+
       <footer>
-        <div>
-          <p className="footer-kicker">Ephrem Tefera</p>
-          <h2>Art shaped by identity,<br />culture and lived experience.</h2>
-        </div>
-        <div className="footer-meta">
-          <p>Visual Artist</p>
-          <p>Addis Ababa, Ethiopia</p>
-          <p>© {new Date().getFullYear()} Ephrem Tefera</p>
-        </div>
+        <a className="brand footer-brand" href="#top"><span className="brand-mark">ET</span><span className="brand-copy"><strong>Ephrem Tefera</strong><small>Visual Artist</small></span></a>
+        <p>Contemporary painting rooted in identity, culture and lived experience.</p>
+        <div className="footer-meta"><span>Addis Ababa, Ethiopia</span><span>© {new Date().getFullYear()} Ephrem Tefera</span></div>
       </footer>
+
+      {activeArtwork !== null && (
+        <div className="lightbox" role="dialog" aria-modal="true" aria-label="Artwork viewer" onClick={() => setActiveArtwork(null)}>
+          <button className="lightbox-close" onClick={() => setActiveArtwork(null)} aria-label="Close artwork viewer">Close ×</button>
+          <button className="lightbox-nav lightbox-prev" onClick={(event) => { event.stopPropagation(); setActiveArtwork((activeArtwork - 1 + artworks.length) % artworks.length) }} aria-label="Previous artwork">←</button>
+          <figure className="lightbox-art" onClick={(event) => event.stopPropagation()}>
+            <img src={artworks[activeArtwork].src} alt={artworks[activeArtwork].alt} />
+            <figcaption><span>Selected work</span><b>{String(activeArtwork + 1).padStart(2, '0')} / {artworks.length}</b></figcaption>
+          </figure>
+          <button className="lightbox-nav lightbox-next" onClick={(event) => { event.stopPropagation(); setActiveArtwork((activeArtwork + 1) % artworks.length) }} aria-label="Next artwork">→</button>
+        </div>
+      )}
     </main>
   )
 }

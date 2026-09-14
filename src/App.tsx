@@ -2,13 +2,11 @@ const art = {
   musicPortrait: '/ephremart/art/photo_1_2026-09-14_18-07-20.webp',
   dualPortrait: '/ephremart/art/photo_2_2026-09-14_18-07-20.webp',
   landscape: '/ephremart/art/photo_3_2026-09-14_18-07-20.webp',
-  heritageWide: '/ephremart/art/photo_4_2026-09-14_18-07-20.webp',
   heritageVertical: '/ephremart/art/photo_5_2026-09-14_18-07-20.webp',
   horseSymbol: '/ephremart/art/photo_6_2026-09-14_18-07-20.webp',
   embrace: '/ephremart/art/photo_7_2026-09-14_18-07-20.webp',
   pianoWide: '/ephremart/art/photo_8_2026-09-14_18-07-20.webp',
   figures: '/ephremart/art/photo_9_2026-09-14_18-07-20.webp',
-  cityWater: '/ephremart/art/photo_10_2026-09-14_18-07-20.webp',
 }
 
 const exhibitions = [
@@ -73,8 +71,7 @@ function App() {
         <div className="works-grid">
           <figure className="work work-tall"><img src={art.musicPortrait} alt="Painting by Ephrem Tefera" /><figcaption><span>Selected work</span><span>01</span></figcaption></figure>
           <figure className="work work-wide"><img src={art.landscape} alt="Landscape painting by Ephrem Tefera" /><figcaption><span>Selected work</span><span>02</span></figcaption></figure>
-          <figure className="work work-square"><img src={art.heritageWide} alt="Cultural painting by Ephrem Tefera" /><figcaption><span>Selected work</span><span>03</span></figcaption></figure>
-          <figure className="work work-wide-bottom"><img src={art.pianoWide} alt="Painting with musical imagery by Ephrem Tefera" /><figcaption><span>Selected work</span><span>04</span></figcaption></figure>
+          <figure className="work work-wide-bottom"><img src={art.pianoWide} alt="Painting with musical imagery by Ephrem Tefera" /><figcaption><span>Selected work</span><span>03</span></figcaption></figure>
         </div>
       </section>
 
@@ -131,7 +128,7 @@ function App() {
             <div className="exhibition-row" key={venue}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <h3>{venue}</h3>
-              <p>Addis Ababa, Ethiopia</p>
+              <p>Selected exhibition venue</p>
             </div>
           ))}
         </div>

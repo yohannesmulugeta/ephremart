@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const artworks = [
   { src: '/ephremart/art/art-01.webp', alt: 'Figurative painting with musical and cultural motifs by Ephrem Tefera', shape: 'portrait' },
@@ -21,8 +21,17 @@ const exhibitions = [
   'Hilton Hotel',
 ]
 
+const mobileLinks = [
+  { href: '#works', label: 'Works' },
+  { href: '#language', label: 'Visual language' },
+  { href: '#about', label: 'About' },
+  { href: '#exhibitions', label: 'Exhibitions' },
+]
+
 function App() {
   const [activeArtwork, setActiveArtwork] = useState<number | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const touchStartX = useRef<number | null>(null)
 
   useEffect(() => {
     if (activeArtwork === null) return
@@ -41,10 +50,48 @@ function App() {
     }
   }, [activeArtwork])
 
+  useEffect(() => {
+    if (!menuOpen) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+
+    document.body.classList.add('menu-open')
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.classList.remove('menu-open')
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [menuOpen])
+
+  const moveArtwork = (direction: 1 | -1) => {
+    setActiveArtwork((current) => {
+      if (current === null) return null
+      return (current + direction + artworks.length) % artworks.length
+    })
+  }
+
+  const onArtworkTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    touchStartX.current = event.changedTouches[0]?.clientX ?? null
+  }
+
+  const onArtworkTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    if (touchStartX.current === null) return
+    const endX = event.changedTouches[0]?.clientX ?? touchStartX.current
+    const delta = endX - touchStartX.current
+    touchStartX.current = null
+
+    if (Math.abs(delta) < 52) return
+    moveArtwork(delta < 0 ? 1 : -1)
+  }
+
   return (
     <main id="top">
+      <a className="skip-link" href="#works">Skip to selected works</a>
+
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Ephrem Tefera home">
+        <a className="brand" href="#top" aria-label="Ephrem Tefera home" onClick={() => setMenuOpen(false)}>
           <span className="brand-mark">ET</span>
           <span className="brand-copy"><strong>Ephrem Tefera</strong><small>Visual Artist</small></span>
         </a>
@@ -54,6 +101,28 @@ function App() {
           <a href="#about">About</a>
           <a href="#exhibitions">Exhibitions</a>
         </nav>
+        <button
+          className="mobile-menu-toggle"
+          type="button"
+          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span />
+          <span />
+        </button>
+
+        {menuOpen && (
+          <nav className="mobile-nav" id="mobile-navigation" aria-label="Mobile navigation">
+            {mobileLinks.map((link, index) => (
+              <a href={link.href} key={link.href} onClick={() => setMenuOpen(false)}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        )}
       </header>
 
       <section className="hero" aria-labelledby="hero-title">
@@ -192,12 +261,17 @@ function App() {
       {activeArtwork !== null && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label="Artwork viewer" onClick={() => setActiveArtwork(null)}>
           <button className="lightbox-close" onClick={() => setActiveArtwork(null)} aria-label="Close artwork viewer">Close ×</button>
-          <button className="lightbox-nav lightbox-prev" onClick={(event) => { event.stopPropagation(); setActiveArtwork((activeArtwork - 1 + artworks.length) % artworks.length) }} aria-label="Previous artwork">←</button>
-          <figure className="lightbox-art" onClick={(event) => event.stopPropagation()}>
+          <button className="lightbox-nav lightbox-prev" onClick={(event) => { event.stopPropagation(); moveArtwork(-1) }} aria-label="Previous artwork">←</button>
+          <figure
+            className="lightbox-art"
+            onClick={(event) => event.stopPropagation()}
+            onTouchStart={onArtworkTouchStart}
+            onTouchEnd={onArtworkTouchEnd}
+          >
             <img src={artworks[activeArtwork].src} alt={artworks[activeArtwork].alt} />
-            <figcaption><span>Selected work</span><b>{String(activeArtwork + 1).padStart(2, '0')} / {artworks.length}</b></figcaption>
+            <figcaption><span>Selected work · swipe to browse</span><b>{String(activeArtwork + 1).padStart(2, '0')} / {artworks.length}</b></figcaption>
           </figure>
-          <button className="lightbox-nav lightbox-next" onClick={(event) => { event.stopPropagation(); setActiveArtwork((activeArtwork + 1) % artworks.length) }} aria-label="Next artwork">→</button>
+          <button className="lightbox-nav lightbox-next" onClick={(event) => { event.stopPropagation(); moveArtwork(1) }} aria-label="Next artwork">→</button>
         </div>
       )}
     </main>

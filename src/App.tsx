@@ -14,6 +14,8 @@ const artworks = [
   { src: '/ephremart/art/art-10.webp', alt: 'Urban water landscape painting with a boat by Ephrem Tefera', shape: 'landscape-wide' },
 ]
 
+const featuredWorks = [2, 9, 7, 3]
+
 const exhibitions = [
   'Hyatt Regency',
   'Ethiopian Skylight Hotel',
@@ -23,6 +25,7 @@ const exhibitions = [
 ]
 
 const mobileLinks = [
+  { href: '#featured', label: 'Highlights' },
   { href: '#works', label: 'Works' },
   { href: '#language', label: 'Visual language' },
   { href: '#about', label: 'About' },
@@ -33,6 +36,7 @@ function App() {
   const [activeArtwork, setActiveArtwork] = useState<number | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const touchStartX = useRef<number | null>(null)
+  const featuredSliderRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (activeArtwork === null) return
@@ -73,6 +77,12 @@ function App() {
     })
   }
 
+  const scrollFeatured = (direction: 1 | -1) => {
+    const slider = featuredSliderRef.current
+    if (!slider) return
+    slider.scrollBy({ left: slider.clientWidth * 0.72 * direction, behavior: 'smooth' })
+  }
+
   const onArtworkTouchStart = (event: TouchEvent<HTMLElement>) => {
     touchStartX.current = event.changedTouches[0]?.clientX ?? null
   }
@@ -97,6 +107,7 @@ function App() {
           <span className="brand-copy"><strong>Ephrem Tefera</strong><small>Visual Artist</small></span>
         </a>
         <nav aria-label="Primary navigation">
+          <a href="#featured">Highlights</a>
           <a href="#works">Works</a>
           <a href="#language">Visual language</a>
           <a href="#about">About</a>
@@ -135,7 +146,7 @@ function App() {
             Working primarily in acrylic and oil, Ephrem explores identity, beauty, culture,
             and women’s life journeys through contemporary visual expression.
           </p>
-          <a className="round-link" href="#works" aria-label="Explore selected works">
+          <a className="round-link" href="#featured" aria-label="Explore selected works">
             <span>Explore works</span><b>↘</b>
           </a>
         </div>
@@ -156,6 +167,46 @@ function App() {
 
       <section className="manifesto" aria-label="Artist introduction">
         <p>Painting becomes a place where <span>identity</span>, memory, rhythm and cultural form can meet.</p>
+      </section>
+
+      <section className="featured-slider-section" id="featured" aria-labelledby="featured-title">
+        <div className="featured-slider-heading">
+          <div>
+            <p className="kicker">Gallery highlights</p>
+            <h2 id="featured-title">Landscape & wide works</h2>
+          </div>
+          <p>Selected wide-format works presented as a quiet, gallery-style sequence. Drag or swipe to browse.</p>
+        </div>
+
+        <div className="featured-slider-shell">
+          <button className="featured-arrow featured-arrow-left" type="button" onClick={() => scrollFeatured(-1)} aria-label="Previous highlighted works">←</button>
+          <div className="featured-slider" ref={featuredSliderRef}>
+            {featuredWorks.map((artworkIndex, slideIndex) => {
+              const artwork = artworks[artworkIndex]
+              return (
+                <button
+                  className="featured-slide"
+                  key={artwork.src}
+                  type="button"
+                  onClick={() => setActiveArtwork(artworkIndex)}
+                  aria-label={`Open highlighted work ${String(slideIndex + 1).padStart(2, '0')}`}
+                >
+                  <figure>
+                    <div className="featured-image-wrap">
+                      <img src={artwork.src} alt={artwork.alt} loading={slideIndex < 2 ? 'eager' : 'lazy'} decoding="async" />
+                    </div>
+                    <figcaption>
+                      <span>{String(slideIndex + 1).padStart(2, '0')}</span>
+                      <strong>Selected work</strong>
+                      <em>View artwork ↗</em>
+                    </figcaption>
+                  </figure>
+                </button>
+              )
+            })}
+          </div>
+          <button className="featured-arrow featured-arrow-right" type="button" onClick={() => scrollFeatured(1)} aria-label="Next highlighted works">→</button>
+        </div>
       </section>
 
       <section className="section works" id="works">

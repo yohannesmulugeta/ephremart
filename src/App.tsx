@@ -25,7 +25,7 @@ const exhibitions = [
 ]
 
 const mobileLinks = [
-  { href: '#featured', label: 'Highlights' },
+  { href: '#hero-gallery', label: 'Highlights' },
   { href: '#works', label: 'Works' },
   { href: '#language', label: 'Visual language' },
   { href: '#about', label: 'About' },
@@ -107,7 +107,7 @@ function App() {
           <span className="brand-copy"><strong>Ephrem Tefera</strong><small>Visual Artist</small></span>
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#featured">Highlights</a>
+          <a href="#hero-gallery">Highlights</a>
           <a href="#works">Works</a>
           <a href="#language">Visual language</a>
           <a href="#about">About</a>
@@ -137,76 +137,61 @@ function App() {
         )}
       </header>
 
-      <section className="hero" aria-labelledby="hero-title">
-        <div className="hero-copy">
-          <p className="eyebrow">Addis Ababa · Ethiopia</p>
-          <h1 id="hero-title">Ephrem<br />Tefera</h1>
-          <p className="hero-line">Contemporary visual stories in <em>color, culture & form.</em></p>
-          <p className="hero-intro">
-            Working primarily in acrylic and oil, Ephrem explores identity, beauty, culture,
-            and women’s life journeys through contemporary visual expression.
-          </p>
-          <a className="round-link" href="#featured" aria-label="Explore selected works">
-            <span>Explore works</span><b>↘</b>
-          </a>
-        </div>
-
-        <div className="hero-stage" aria-label="Selected works by Ephrem Tefera">
-          <button className="hero-art hero-main" onClick={() => setActiveArtwork(1)} aria-label="View selected artwork">
-            <img src={artworks[1].src} alt={artworks[1].alt} fetchPriority="high" />
-          </button>
-          <button className="hero-art hero-left" onClick={() => setActiveArtwork(7)} aria-label="View selected artwork">
-            <img src={artworks[7].src} alt={artworks[7].alt} fetchPriority="high" />
-          </button>
-          <button className="hero-art hero-right" onClick={() => setActiveArtwork(4)} aria-label="View selected artwork">
-            <img src={artworks[4].src} alt={artworks[4].alt} fetchPriority="high" />
-          </button>
-          <div className="hero-index">Selected works <span>01—10</span></div>
-        </div>
-      </section>
-
-      <section className="manifesto" aria-label="Artist introduction">
-        <p>Painting becomes a place where <span>identity</span>, memory, rhythm and cultural form can meet.</p>
-      </section>
-
-      <section className="featured-slider-section" id="featured" aria-labelledby="featured-title">
-        <div className="featured-slider-heading">
-          <div>
-            <p className="kicker">Gallery highlights</p>
-            <h2 id="featured-title">Landscape & wide works</h2>
+      <section className="hero hero-gallery-hero" id="hero-gallery" aria-labelledby="hero-title">
+        <div className="hero-gallery-intro">
+          <div className="hero-gallery-name">
+            <p className="eyebrow">Addis Ababa · Ethiopia</p>
+            <h1 id="hero-title">Ephrem<br />Tefera</h1>
           </div>
-          <p>Selected wide-format works presented as a quiet, gallery-style sequence. Drag or swipe to browse.</p>
+          <div className="hero-gallery-copy">
+            <p className="hero-line">Contemporary visual stories in <em>color, culture & form.</em></p>
+            <p className="hero-intro">
+              Working primarily in acrylic and oil, Ephrem explores identity, beauty, culture,
+              and women’s life journeys through contemporary visual expression.
+            </p>
+            <div className="hero-gallery-actions">
+              <a className="round-link" href="#works" aria-label="Explore selected works">
+                <span>Explore works</span><b>↘</b>
+              </a>
+              <span className="hero-gallery-hint">Drag · swipe · open</span>
+            </div>
+          </div>
         </div>
 
-        <div className="featured-slider-shell">
-          <button className="featured-arrow featured-arrow-left" type="button" onClick={() => scrollFeatured(-1)} aria-label="Previous highlighted works">←</button>
-          <div className="featured-slider" ref={featuredSliderRef}>
+        <div className="hero-gallery-shell" aria-label="Highlighted landscape and wide-format works">
+          <button className="hero-gallery-arrow hero-gallery-arrow-left" type="button" onClick={() => scrollFeatured(-1)} aria-label="Previous highlighted works">←</button>
+          <div className="hero-gallery-slider" ref={featuredSliderRef}>
             {featuredWorks.map((artworkIndex, slideIndex) => {
               const artwork = artworks[artworkIndex]
               return (
                 <button
-                  className="featured-slide"
+                  className="hero-gallery-slide"
                   key={artwork.src}
                   type="button"
                   onClick={() => setActiveArtwork(artworkIndex)}
                   aria-label={`Open highlighted work ${String(slideIndex + 1).padStart(2, '0')}`}
                 >
-                  <figure>
-                    <div className="featured-image-wrap">
-                      <img src={artwork.src} alt={artwork.alt} loading={slideIndex < 2 ? 'eager' : 'lazy'} decoding="async" />
-                    </div>
-                    <figcaption>
-                      <span>{String(slideIndex + 1).padStart(2, '0')}</span>
-                      <strong>Selected work</strong>
-                      <em>View artwork ↗</em>
-                    </figcaption>
-                  </figure>
+                  <img src={artwork.src} alt={artwork.alt} fetchPriority={slideIndex < 2 ? 'high' : 'auto'} decoding="async" />
+                  <span className="hero-gallery-meta">
+                    <b>{String(slideIndex + 1).padStart(2, '0')}</b>
+                    <em>Selected work</em>
+                    <i>View ↗</i>
+                  </span>
                 </button>
               )
             })}
           </div>
-          <button className="featured-arrow featured-arrow-right" type="button" onClick={() => scrollFeatured(1)} aria-label="Next highlighted works">→</button>
+          <button className="hero-gallery-arrow hero-gallery-arrow-right" type="button" onClick={() => scrollFeatured(1)} aria-label="Next highlighted works">→</button>
         </div>
+
+        <div className="hero-gallery-foot">
+          <span>Selected highlights</span>
+          <span>01 — 04</span>
+        </div>
+      </section>
+
+      <section className="manifesto" aria-label="Artist introduction">
+        <p>Painting becomes a place where <span>identity</span>, memory, rhythm and cultural form can meet.</p>
       </section>
 
       <section className="section works" id="works">

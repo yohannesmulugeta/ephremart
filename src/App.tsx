@@ -80,7 +80,7 @@ function App() {
   const scrollFeatured = (direction: 1 | -1) => {
     const slider = featuredSliderRef.current
     if (!slider) return
-    slider.scrollBy({ left: slider.clientWidth * 0.72 * direction, behavior: 'smooth' })
+    slider.scrollBy({ left: slider.clientWidth * 0.52 * direction, behavior: 'smooth' })
   }
 
   const onArtworkTouchStart = (event: TouchEvent<HTMLElement>) => {
@@ -104,7 +104,7 @@ function App() {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Ephrem Tefera home" onClick={() => setMenuOpen(false)}>
           <span className="brand-mark">ET</span>
-          <span className="brand-copy"><strong>Ephrem Tefera</strong><small>Visual Artist</small></span>
+          <span className="brand-copy"><strong>Ephrem Tefera</strong><small>Visual Artist · Addis Ababa</small></span>
         </a>
         <nav aria-label="Primary navigation">
           <a href="#hero-gallery">Highlights</a>
@@ -138,28 +138,10 @@ function App() {
       </header>
 
       <section className="hero hero-gallery-hero" id="hero-gallery" aria-labelledby="hero-title">
-        <div className="hero-gallery-intro">
-          <div className="hero-gallery-name">
-            <p className="eyebrow">Addis Ababa · Ethiopia</p>
-            <h1 id="hero-title">Ephrem<br />Tefera</h1>
-          </div>
-          <div className="hero-gallery-copy">
-            <p className="hero-line">Contemporary visual stories in <em>color, culture & form.</em></p>
-            <p className="hero-intro">
-              Working primarily in acrylic and oil, Ephrem explores identity, beauty, culture,
-              and women’s life journeys through contemporary visual expression.
-            </p>
-            <div className="hero-gallery-actions">
-              <a className="round-link" href="#works" aria-label="Explore selected works">
-                <span>Explore works</span><b>↘</b>
-              </a>
-              <span className="hero-gallery-hint">Drag · swipe · open</span>
-            </div>
-          </div>
-        </div>
+        <h1 id="hero-title" className="visually-hidden">Ephrem Tefera — Visual Artist</h1>
 
-        <div className="hero-gallery-shell" aria-label="Highlighted landscape and wide-format works">
-          <button className="hero-gallery-arrow hero-gallery-arrow-left" type="button" onClick={() => scrollFeatured(-1)} aria-label="Previous highlighted works">←</button>
+        <div className="hero-gallery-shell" aria-label="Highlighted works by Ephrem Tefera">
+          <button className="hero-gallery-arrow hero-gallery-arrow-left" type="button" onClick={() => scrollFeatured(-1)} aria-label="Previous highlighted works">‹</button>
           <div className="hero-gallery-slider" ref={featuredSliderRef}>
             {featuredWorks.map((artworkIndex, slideIndex) => {
               const artwork = artworks[artworkIndex]
@@ -172,21 +154,18 @@ function App() {
                   aria-label={`Open highlighted work ${String(slideIndex + 1).padStart(2, '0')}`}
                 >
                   <img src={artwork.src} alt={artwork.alt} fetchPriority={slideIndex < 2 ? 'high' : 'auto'} decoding="async" />
-                  <span className="hero-gallery-meta">
-                    <b>{String(slideIndex + 1).padStart(2, '0')}</b>
-                    <em>Selected work</em>
-                    <i>View ↗</i>
-                  </span>
+                  <span className="hero-gallery-number">{String(slideIndex + 1).padStart(2, '0')}</span>
                 </button>
               )
             })}
           </div>
-          <button className="hero-gallery-arrow hero-gallery-arrow-right" type="button" onClick={() => scrollFeatured(1)} aria-label="Next highlighted works">→</button>
+          <button className="hero-gallery-arrow hero-gallery-arrow-right" type="button" onClick={() => scrollFeatured(1)} aria-label="Next highlighted works">›</button>
         </div>
 
-        <div className="hero-gallery-foot">
-          <span>Selected highlights</span>
-          <span>01 — 04</span>
+        <div className="hero-gallery-caption">
+          <span className="hero-gallery-caption-label">Selected highlights · 01—04</span>
+          <p>Contemporary visual stories in <em>color, culture & form.</em></p>
+          <a href="#works">View all works <span>↘</span></a>
         </div>
       </section>
 
